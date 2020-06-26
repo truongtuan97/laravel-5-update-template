@@ -31,9 +31,13 @@ class CustomerUserController extends Controller
     }
 
     public function edit(AccountInfo $user) {
-        $user = Auth::user();        
-        $customer = Customer::where('username', $user->cAccName)->first();        
-        return view('users.edit', compact('customer'));
+        $user = Auth::user();
+        $customer = Customer::where('username', $user->cAccName)->first();
+        if (!isset($customer))
+        {
+            $customer = new Customer();
+        }
+        return view('users.edit', compact('user', 'customer'));
     }
 
     public function update() {
@@ -186,12 +190,12 @@ class CustomerUserController extends Controller
             $user->save();
             return redirect()->back()->with('alert', 'success');
         }
-        else {
+        else {            
             if ($user->cSecPassWord != strtoupper(md5(request('password'))))
                 return redirect()->back()->withErrors(['password' => ['Nhập lại password.']]);
             
-            if ($user->phone != request('phone'))
-                return redirect()->back()->withErrors(['email' => ['Nhập lại email.']]);
+            if ($user->email != request('email'))
+                return redirect()->back()->withErrors(['email' => ['Nhập lại email.']]);               
         }
     }
 
@@ -206,7 +210,7 @@ class CustomerUserController extends Controller
 
     private function displayPhone($phone) {
         $str1 = substr($phone, 0, 3);
-        $str2 = substr($phone, 6, 3);
+        $str2 = substr($phone, -3);
         $phone = $str1.'****'.$str2;
         return $phone;
     }

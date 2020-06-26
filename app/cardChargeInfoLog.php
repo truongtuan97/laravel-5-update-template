@@ -15,6 +15,6 @@ class CardChargeInfoLog extends Model
      * @var array
      */
     protected $fillable = [
-        'adminAccount', 'userAccount', 'cardType', 'value', 'realValue', 'dateUpdate'
+        'adminAccount', 'userAccount', 'cardType', 'value', 'realValue', 'dateUpdate', 'khuyenmai'
     ];
 }
