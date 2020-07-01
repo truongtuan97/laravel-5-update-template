@@ -31,8 +31,8 @@ class ManagementController extends Controller
 
     public function listUser() {
         $accountName = request('accountName');
-        if (request('accountName')) {            
-            $users = AccountInfo::whereRaw("cAccName like ?", ["%".request('accountName')."%"])->get();            
+        if (request('accountName')) {
+            $users = AccountInfo::whereRaw("cAccName like ?", ["%".request('accountName')."%"])->get();
         } else {
             $users = [];
         }

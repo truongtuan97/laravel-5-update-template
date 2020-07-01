@@ -8,6 +8,8 @@ use App\Customer;
 use App\AccountInfo;
 use App\CardChargeInfoLog;
 use App\AccountMoneyTracking;
+use App\CardInfo;
+use App\CardType;
 use Carbon\Carbon;
 
 class CustomerUserController extends Controller
@@ -198,6 +200,15 @@ class CustomerUserController extends Controller
                 return redirect()->back()->withErrors(['email' => ['Nhập lại email.']]);               
         }
     }
+
+    public function napcard() {
+        $user = Auth::user();
+        $cardInfos = CardInfo::all();
+        $cardTypes = CardType::all();
+        return view('users.napcard', compact(['user', 'cardInfos', 'cardTypes']));
+    }
+    
+    public function updateNapCard() {}
 
     private function displayEmail($email) {
         $pieces = explode("@", $email);

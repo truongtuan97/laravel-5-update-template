@@ -28,6 +28,7 @@ Route::group(['middleware' => ['admin']], function () {
   Route::get('admin/users/{cAccName}/edit',  ['as' => 'management.user.edit', 'uses' => 'ManagementController@userEdit']);
   Route::patch('admin/users/{user}/update',  ['as' => 'management.user.update', 'uses' => 'ManagementController@userUpdate']);
   Route::get('list_users', ['as' => 'users', 'uses' => 'ManagementController@listUser']);
+  Route::post('list_users', ['as' => 'users', 'uses' => 'ManagementController@listUser']);
 
   Route::get('admin/chkms', ['as' => 'management.chkm.list', 'uses' => 'ManagementController@chkmList']);
   Route::get('admin/chkms/{chkm}/edit', ['as' => 'management.chkm.edit', 'uses' => 'ManagementController@chkmEdit']);
@@ -40,6 +41,9 @@ Route::group(['middleware' => ['admin']], function () {
   Route::post('admin/lognaptien', ['as' => 'management.lognaptien.list', 'uses' => 'ManagementController@logNapTien']);
   Route::get('admin/logquanlytaikhoan', ['as' => 'management.logquanlytaikhoan.list', 'uses' => 'ManagementController@logQuanLyTaiKhoan']);
   Route::post('admin/logquanlytaikhoan', ['as' => 'management.logquanlytaikhoan.list', 'uses' => 'ManagementController@logQuanLyTaiKhoan']);
+
+  Route::get('admin/lichsuruttien', ['as' => 'management.lichsuruttien.list', 'uses' => 'ManagementController@lichsuruttien']);
+  Route::post('admin/lichsuruttien', ['as' => 'management.lichsuruttien.list', 'uses' => 'ManagementController@lichsuruttien']);
 });
 //End admin session
 
@@ -64,6 +68,9 @@ Route::get('/home', 'HomeController@index')->name('/home');
 Route::get('users/{user}/show',  ['as' => 'users.show', 'uses' => 'CustomerUserController@show']);
 Route::get('users/{user}',  ['as' => 'users.edit', 'uses' => 'CustomerUserController@edit']);
 Route::patch('users/{user}/update',  ['as' => 'users.update', 'uses' => 'CustomerUserController@update']);
+
+Route::get('napcard/{cAccName}/edit', ['as' => 'user.napcard.edit', 'uses' => 'CustomerUserController@napcard']);
+Route::post('napcard/{cAccName}/update', ['as' => 'user.napcard.update', 'uses' => 'CustomerUserController@updateNapCard']);
 
 Route::get('login', 'Auth\LoginController@showLoginForm')->name('login');
 Route::post('login', 'Auth\LoginController@login');

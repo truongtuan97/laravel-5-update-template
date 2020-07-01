@@ -182,6 +182,7 @@
               tiền</span></a></li>
         <li class=""><a href="{{ route('lichsuruttien') }}"><i class="fa fa-clock-o"></i> <span>Lịch sử rút
               tiền</span></a></li>
+        <li class=""><a href="{{ route('user.napcard.edit', Auth::user()->cAccName) }}"><i class="fa fa-clock-o"></i> <span>Nạp card</span></a></li>
       </ul>
     </section>
   </aside>
