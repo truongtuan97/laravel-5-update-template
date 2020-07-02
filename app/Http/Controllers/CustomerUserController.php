@@ -221,7 +221,8 @@ class CustomerUserController extends Controller
         $orderID = $user->cAccName.Carbon::Now();
         $cardAmount = $request->cardInfo;
 
-        $client = new Client(['verify' => false, 'timeout' => 60.0]);
+        $client = new Client(['verify' => false, 'timeout' => 60.0, 
+            'headers' => [ 'Content-Type' => 'application/json', "Accept: application/json" ]]);
         
         $options['query']['jwt'] = BaoKim::setKey(env("BAOKIM_API_KEY"), env("BAOKIM_SECREY_KEY"));
                 
@@ -233,8 +234,9 @@ class CustomerUserController extends Controller
         $payload['webhooks'] = "https://testid.vltk.com.vn/napcard_success";
         
         $options['form_params'] = $payload;
-        
-        $url_api = "https://api.kingcard.online/kingcard/api/v1/strike-card?jwt=".BaoKim::getKey();
+        $token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE1OTM2ODUxNTIsImp0aSI6InV2aU9qZjFXSVBIS1IrbzVlcmtLQlp3Ymt1UDA5djg3K0xITmptdkxlc1U9IiwiaXNzIjoielNQWGJKb1V2R1NFRVZIMnJLR1VVdXlmdFRrbFF1WHEiLCJuYmYiOjE1OTM2ODUxNTIsImV4cCI6MTU5Mzc3MTU1MiwiZm9ybV9wYXJhbXMiOltdfQ.ACyE3UQ3LcB66Thxs9h1dLe_d_c8o1CRU7BvmVnv_Lo";
+        // $url_api = "https://api.kingcard.online/kingcard/api/v1/strike-card?jwt=".BaoKim::getKey();
+        $url_api = "https://api.kingcard.online/kingcard/api/v1/strike-card?jwt=".$token;
 
         //save to log
         CardHistory::create([
