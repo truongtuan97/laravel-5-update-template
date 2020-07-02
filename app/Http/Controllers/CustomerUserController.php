@@ -230,7 +230,7 @@ class CustomerUserController extends Controller
         $payload['amount'] = $cardAmount;
         $payload['code'] = $request->pin;
         $payload['serial'] = $request->serial;
-        $payload['webhooks'] = "http://localhost:8000/napcard_success";
+        $payload['webhooks'] = "https://testid.vltk.com.vn/napcard_success";
         
         $options['form_params'] = $payload;
         
