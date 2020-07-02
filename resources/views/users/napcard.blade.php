@@ -21,7 +21,7 @@
               @endif
               <form method="post" action="{{route('user.napcard.update', $user)}}">
                 @csrf
-                {{ method_field('PATCH') }}
+                <!-- {{ method_field('PATCH') }} -->
 
                 <div class="form-group row">                                        
                     <label for="cardType" class="col-md-4 col-form-label">{{ __('Loại thẻ') }}</label>
@@ -40,10 +40,10 @@
                     </div>                    
                 </div>
                 <div class="form-group row">                                                            
-                    <label for="password-confirm" class="col-md-4 col-form-label">{{ __('Số tiền') }}</label>
+                    <label for="cardInfo" class="col-md-4 col-form-label">{{ __('Số tiền') }}</label>
                     <div class="col-sm-6">
-                        <select id="cardInfo" name="cardType" class="form-control">
-                            <option value="0" selected="" disabled="">Chọn loại thẻ</option>
+                        <select id="cardInfo" name="cardInfo" class="form-control">
+                            <option value="0" selected="" disabled="">Chọn giá trị thẻ nạp</option>
                             @foreach($cardInfos as $cardInfo)
                             <option value="{{ $cardInfo->value }}">{{ $cardInfo->option }}</option>
                             @endforeach

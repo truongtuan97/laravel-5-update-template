@@ -4,12 +4,18 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use GuzzleHttp\Client;
+use BaoKimSDK\BaoKim;
+
 use App\Customer;
 use App\AccountInfo;
 use App\CardChargeInfoLog;
 use App\AccountMoneyTracking;
 use App\CardInfo;
 use App\CardType;
+use App\CardHistory;
+use App\PromotionConfiguration;
+
 use Carbon\Carbon;
 
 class CustomerUserController extends Controller
@@ -208,7 +214,43 @@ class CustomerUserController extends Controller
         return view('users.napcard', compact(['user', 'cardInfos', 'cardTypes']));
     }
     
-    public function updateNapCard() {}
+    public function updateNapCard(Request $request) {
+        $user = Auth::user();
+        $chkm = PromotionConfiguration::all()->first();
+
+        $orderID = $user->cAccName.Carbon::Now();
+        $cardAmount = $request->cardInfo;
+
+        $client = new Client(['verify' => false, 'timeout' => 60.0]);
+        
+        $options['query']['jwt'] = BaoKim::setKey(env("BAOKIM_API_KEY"), env("BAOKIM_SECREY_KEY"));
+                
+        $payload['mrc_order_id'] = $orderID;
+        $payload['telco'] = $request->cardType;
+        $payload['amount'] = $cardAmount;
+        $payload['code'] = $request->pin;
+        $payload['serial'] = $request->serial;
+        $payload['webhooks'] = "http://localhost:8000/napcard_success";
+        
+        $options['form_params'] = $payload;
+        
+        $url_api = "https://api.kingcard.online/kingcard/api/v1/strike-card?jwt=".BaoKim::getKey();
+
+        //save to log
+        CardHistory::create([
+            'username' => Auth::user()->cAccName,
+            'orderID' => $orderID,
+            'card_type' => $request->cardType,
+            'card_amount' => $request->cardInfo,
+            'card_code' => $request->pin,
+            'card_serial' => $request->serial,
+            'status' => 1,
+            'ingame_amount' => (($cardAmount / 1000) + (($cardAmount / 1000) * $chkm->khuyenmai))
+        ]);
+
+        $response = $client->request("POST", $url_api, $options);
+        dd($response);
+    }
 
     private function displayEmail($email) {
         $pieces = explode("@", $email);
