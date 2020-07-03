@@ -225,7 +225,7 @@ class CustomerUserController extends Controller
         $payload['amount'] = $cardAmount;
         $payload['code'] = $request->pin;
         $payload['serial'] = $request->serial;
-        $payload['webhooks'] = "https://testid.vltk.com.vn/napcard_success";
+        $payload['webhooks'] = "https://testid.vltk.com.vn/napcard/success";
         
         BaoKim::setKey(env("BAOKIM_API_KEY"), env("BAOKIM_SECREY_KEY"));
         $url_api = "https://api.kingcard.online/kingcard/api/v1/strike-card?jwt=".BaoKim::getKey();        
@@ -280,7 +280,7 @@ class CustomerUserController extends Controller
         }
         catch (Exception $ex) {
             dd($ex);
-        }        
+        }
     }
 
     private function displayEmail($email) {
