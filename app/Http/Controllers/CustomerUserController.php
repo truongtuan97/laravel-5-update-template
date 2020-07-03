@@ -227,9 +227,8 @@ class CustomerUserController extends Controller
         $payload['serial'] = $request->serial;
         $payload['webhooks'] = "https://testid.vltk.com.vn/napcard_success";
         
-        // BaoKim::setKey(env("BAOKIM_API_KEY"), env("BAOKIM_SECREY_KEY"));
-        // $url_api = "https://api.kingcard.online/kingcard/api/v1/strike-card?jwt=".BaoKim::getKey();
-        $url_api = "https://api.kingcard.online/kingcard/api/v1/strike-card?jwt=".env('BAOKIM_JWT');
+        BaoKim::setKey(env("BAOKIM_API_KEY"), env("BAOKIM_SECREY_KEY"));
+        $url_api = "https://api.kingcard.online/kingcard/api/v1/strike-card?jwt=".BaoKim::getKey();        
         
         //save to log
         CardHistory::create([
