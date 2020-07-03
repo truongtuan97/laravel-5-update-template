@@ -269,7 +269,7 @@ class CustomerUserController extends Controller
 
     public function napcard_success(Request $request) {
         $data = \json_decode($request);
-
+        Log::info($data);
         try {
             if (!is_null($data->order->mrc_order_id && !is_null($data->txn->id))) {
                 $cardHistory = CardHistory::where('orderID')->first();
