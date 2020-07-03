@@ -268,7 +268,19 @@ class CustomerUserController extends Controller
     }
 
     public function napcard_success(Request $request) {
-        dd($request);
+        $data = \json_decode($request);
+
+        try {
+            if (!is_null($data->order->mrc_order_id && !is_null($data->txn->id))) {
+                $cardHistory = CardHistory::where('orderID')->first();
+                $cardHistory->baokim_txn_id = $data->txn->id;
+                $cardHistory->updated_at = Carbon::now();
+                $cardHistory->save();
+            }
+        }
+        catch (Exception $ex) {
+            dd($ex);
+        }        
     }
 
     private function displayEmail($email) {
