@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use GuzzleHttp\Client;
 use BaoKimSDK\BaoKim;
 
 use App\Customer;
@@ -218,14 +217,9 @@ class CustomerUserController extends Controller
         $user = Auth::user();
         $chkm = PromotionConfiguration::all()->first();
 
-        $orderID = $user->cAccName.Carbon::Now();
+        $orderID = $user->cAccName.'-'.Carbon::now()->timestamp;
         $cardAmount = $request->cardInfo;
-
-        $client = new Client(['verify' => false, 'timeout' => 60.0, 
-            'headers' => [ 'Content-Type' => 'application/json', "Accept: application/json" ]]);
         
-        $options['query']['jwt'] = BaoKim::setKey(env("BAOKIM_API_KEY"), env("BAOKIM_SECREY_KEY"));
-                
         $payload['mrc_order_id'] = $orderID;
         $payload['telco'] = $request->cardType;
         $payload['amount'] = $cardAmount;
@@ -233,11 +227,10 @@ class CustomerUserController extends Controller
         $payload['serial'] = $request->serial;
         $payload['webhooks'] = "https://testid.vltk.com.vn/napcard_success";
         
-        $options['form_params'] = $payload;
-        $token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE1OTM2ODUxNTIsImp0aSI6InV2aU9qZjFXSVBIS1IrbzVlcmtLQlp3Ymt1UDA5djg3K0xITmptdkxlc1U9IiwiaXNzIjoielNQWGJKb1V2R1NFRVZIMnJLR1VVdXlmdFRrbFF1WHEiLCJuYmYiOjE1OTM2ODUxNTIsImV4cCI6MTU5Mzc3MTU1MiwiZm9ybV9wYXJhbXMiOltdfQ.ACyE3UQ3LcB66Thxs9h1dLe_d_c8o1CRU7BvmVnv_Lo";
+        // BaoKim::setKey(env("BAOKIM_API_KEY"), env("BAOKIM_SECREY_KEY"));
         // $url_api = "https://api.kingcard.online/kingcard/api/v1/strike-card?jwt=".BaoKim::getKey();
-        $url_api = "https://api.kingcard.online/kingcard/api/v1/strike-card?jwt=".$token;
-
+        $url_api = "https://api.kingcard.online/kingcard/api/v1/strike-card?jwt=".env('BAOKIM_JWT');
+        
         //save to log
         CardHistory::create([
             'username' => Auth::user()->cAccName,
@@ -247,11 +240,36 @@ class CustomerUserController extends Controller
             'card_code' => $request->pin,
             'card_serial' => $request->serial,
             'status' => 1,
-            'ingame_amount' => (($cardAmount / 1000) + (($cardAmount / 1000) * $chkm->khuyenmai))
+            'ingame_amount' => (($cardAmount / 1000) + (($cardAmount / 1000) * $chkm->khuyenmai)),
+            'created_at' => Carbon::now(),
+            'updated_at' => Carbon::now(),
         ]);
+        
+        // create request with CURL
+        $ch = curl_init($url_api);
 
-        $response = $client->request("POST", $url_api, $options);
-        dd($response);
+        $options = array(
+            CURLOPT_RETURNTRANSFER => true,   // return web page
+            CURLOPT_HTTPHEADER     => array("Content-Type: application/json", "Accept: application/json"),  // don't return headers
+            CURLOPT_FOLLOWLOCATION => true,   // follow redirects
+            CURLOPT_MAXREDIRS      => 10,     // stop after 10 redirects
+            CURLOPT_ENCODING       => "",     // handle compressed            
+            CURLOPT_AUTOREFERER    => true,   // set referrer on redirect
+            CURLOPT_CONNECTTIMEOUT => 60,    // time-out on connect
+            CURLOPT_TIMEOUT        => 60,    // time-out on response
+            CURLOPT_POST           => true,                        
+            CURLOPT_SSL_VERIFYPEER => false,  // ignore SSL verify
+            CURLOPT_POSTFIELDS     => \json_encode($payload)
+        ); 
+            
+        curl_setopt_array($ch, $options);        
+        $output = curl_exec($ch);
+        curl_close($ch);
+        dd(\json_decode($output, true));
+    }
+
+    public function napcard_success(Request $request) {
+        dd($request);
     }
 
     private function displayEmail($email) {

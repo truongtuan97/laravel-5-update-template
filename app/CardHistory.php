@@ -8,7 +8,7 @@ class CardHistory extends Model
 {
     protected $table = 'card_history';
     protected $dateFormat = 'Y-m-d H:i:s';
-    public $timestamps = false;
+    //public $timestamps = false;
     /**
      * The attributes that are mass assignable.
      *
