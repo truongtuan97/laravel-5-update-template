@@ -71,7 +71,6 @@ Route::patch('users/{user}/update',  ['as' => 'users.update', 'uses' => 'Custome
 
 Route::get('napcard/{cAccName}/edit', ['as' => 'user.napcard.edit', 'uses' => 'CustomerUserController@napcard']);
 Route::post('napcard/{cAccName}/update', ['as' => 'user.napcard.update', 'uses' => 'CustomerUserController@updateNapCard']);
-Route::post("napcard/success", ['as' => 'napcard_success', 'uses' => 'CustomerUserController@napcard_success']);
 
 Route::get('login', 'Auth\LoginController@showLoginForm')->name('login');
 Route::post('login', 'Auth\LoginController@login');

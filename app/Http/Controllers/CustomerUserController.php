@@ -225,7 +225,7 @@ class CustomerUserController extends Controller
         $payload['amount'] = $cardAmount;
         $payload['code'] = $request->pin;
         $payload['serial'] = $request->serial;
-        $payload['webhooks'] = "https://testid.vltk.com.vn/napcard/success";
+        $payload['webhooks'] = env("NAPCARD_WEB_HOOK_URL");
         
         BaoKim::setKey(env("BAOKIM_API_KEY"), env("BAOKIM_SECREY_KEY"));
         $url_api = "https://api.kingcard.online/kingcard/api/v1/strike-card?jwt=".BaoKim::getKey();        
@@ -265,22 +265,6 @@ class CustomerUserController extends Controller
         $output = curl_exec($ch);
         curl_close($ch);
         dd(\json_decode($output, true));
-    }
-
-    public function napcard_success(Request $request) {
-        $data = \json_decode($request);
-        Log::info($data);
-        try {
-            if (!is_null($data->order->mrc_order_id && !is_null($data->txn->id))) {
-                $cardHistory = CardHistory::where('orderID')->first();
-                $cardHistory->baokim_txn_id = $data->txn->id;
-                $cardHistory->updated_at = Carbon::now();
-                $cardHistory->save();
-            }
-        }
-        catch (Exception $ex) {
-            dd($ex);
-        }
     }
 
     private function displayEmail($email) {
