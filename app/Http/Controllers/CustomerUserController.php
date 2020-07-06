@@ -264,7 +264,23 @@ class CustomerUserController extends Controller
         curl_setopt_array($ch, $options);        
         $output = curl_exec($ch);
         curl_close($ch);
-        dd(\json_decode($output, true));
+        
+        $loop = 0;
+        $cardHistory = new \stdClass();
+
+        while ($loop < 3) {
+            $cardHistory = CardHistory::where('orderID', $orderID)->first();
+            if ($cardHistory->success == 1) {
+                break;
+            }
+            $loop += 1;
+        }
+        
+        if ($cardHistory->success == 1) {
+            return redirect()->back()->with('alert', 'success');
+        } else {
+            return redirect()->back()->with('alert', 'failed');
+        }
     }
 
     private function displayEmail($email) {
