@@ -274,7 +274,7 @@ class CustomerUserController extends Controller
         $cardHistory = new \stdClass();
 
         while ($loop < 3) {
-            \sleep(1.5);
+            \sleep(2);
             $cardHistory = CardHistory::where('orderID', $orderID)->first();
             if ($cardHistory->success == 1) {
                 break;
