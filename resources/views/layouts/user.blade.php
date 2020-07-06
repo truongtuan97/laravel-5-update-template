@@ -202,6 +202,8 @@
   <div class="sidenav-overlay"></div>
   <div class="drag-target"></div>
 
+  <div class="modal"><!-- Place at bottom of page --></div>
+
   <!-- BEGIN: Vendor JS-->
   <!-- <script src="{{ asset('app-assets/vendors/js/vendors.min.js') }}"></script>
     <script src="{{ asset('app-assets/vendors/js/pickers/pickadate/picker.js') }}"></script>
@@ -241,6 +243,21 @@
 
   <script src="{{ asset('app-assets/vendors/js/tables/datatable/datatables.min.js') }}"></script>
   <script src="{{ asset('app-assets/js/scripts/pages/page-users.js') }}"></script>
+
+  <script>
+        function showModal() {
+          $body = $("body");
+
+          $cardInfo = $('#cardInfo').val();
+          $cardType = $('#cardType').val();
+          $pin = $('#pin').val();
+          $serial = $('#serial').val();
+
+          if ($cardInfo != null && $cardType != null && $pin.length > 0 && $serial.length > 0) {
+            $body.addClass("loading");
+          }            
+        }
+    </script>
 </body>
 <!-- END: Body-->
 

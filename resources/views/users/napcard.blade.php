@@ -85,7 +85,7 @@
                     <div class="col-sm-4"></div>
                     <div class="col-sm-8">                        
                         <a href="{{ route('users.show', Auth::user()->id) }}" class="btn btn-primary btn-cancel">Hủy</a>
-                        <button type="submit" class="btn btn-primary">
+                        <button type="submit" class="btn btn-primary" onclick="showModal();">
                           {{ __('Cập nhật') }}
                         </button>
                     </div>

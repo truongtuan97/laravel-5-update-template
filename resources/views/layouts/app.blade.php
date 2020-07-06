@@ -221,8 +221,7 @@
 
     <!-- BEGIN: Page JS-->
     <script src="{{ asset('app-assets/js/scripts/pages/app-invoice.js') }}"></script>
-    <!-- END: Page JS-->
-
+    <!-- END: Page JS-->    
 </body>
 <!-- END: Body-->
 
