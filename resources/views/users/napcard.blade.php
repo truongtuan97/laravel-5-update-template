@@ -37,7 +37,7 @@
                             <strong>{{ $message }}</strong>
                         </span>
                         @enderror
-                    </div>                    
+                    </div>
                 </div>
                 <div class="form-group row">                                                            
                     <label for="cardInfo" class="col-md-4 col-form-label">{{ __('Số tiền') }}</label>
