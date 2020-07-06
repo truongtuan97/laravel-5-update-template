@@ -214,6 +214,11 @@ class CustomerUserController extends Controller
     }
     
     public function updateNapCard(Request $request) {
+
+        $validateResult = $this->validate($request, [
+            'cardType' => 'required',
+            'cardInfo' => 'required',
+        ]);        
         $user = Auth::user();
         $chkm = PromotionConfiguration::all()->first();
 

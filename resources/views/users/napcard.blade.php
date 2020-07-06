@@ -26,8 +26,8 @@
                 <div class="form-group row">                                        
                     <label for="cardType" class="col-md-4 col-form-label">{{ __('Loại thẻ') }}</label>
                     <div class="col-sm-6">
-                        <select id="cardType" name="cardType" class="form-control">
-                            <option value="0" selected="" disabled="">Chọn loại thẻ</option>
+                        <select id="cardType" name="cardType" class="form-control" require>
+                            <option value="" selected="" disabled="">Chọn loại thẻ</option>
                             @foreach($cardTypes as $cardType)
                             <option value="{{ $cardType->value }}">{{ $cardType->option }}</option>
                             @endforeach
@@ -42,8 +42,8 @@
                 <div class="form-group row">                                                            
                     <label for="cardInfo" class="col-md-4 col-form-label">{{ __('Số tiền') }}</label>
                     <div class="col-sm-6">
-                        <select id="cardInfo" name="cardInfo" class="form-control">
-                            <option value="0" selected="" disabled="">Chọn giá trị thẻ nạp</option>
+                        <select id="cardInfo" name="cardInfo" class="form-control" require>
+                            <option value="" selected="" disabled="">Chọn giá trị thẻ nạp</option>
                             @foreach($cardInfos as $cardInfo)
                             <option value="{{ $cardInfo->value }}">{{ $cardInfo->option }}</option>
                             @endforeach
