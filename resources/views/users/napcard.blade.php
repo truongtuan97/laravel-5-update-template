@@ -13,9 +13,19 @@
                   Update success.
                 </div>
                 @endif
-                @if (session('alert') == 'failed')
+                @if (session('alert') == 'status1')
                 <div class="alert alert-danger mb-2" role="alert">
-                  <strong>Quá trình đang được xử lý vui lòng kiểm tra lịch sử nạp card sau.</strong>
+                  <strong>Thẻ vừa nạp, vui lòng chờ 15 phút rồi kiểm tra lịch sử nạp thẻ.</strong>
+                </div>
+                @endif
+                @if (session('alert') == 'status2')
+                <div class="alert alert-danger mb-2" role="alert">
+                  <strong>Thẻ lỗi, vui lòng kiểm tra lại mã PIN hoặc Serial.</strong>
+                </div>
+                @endif
+                @if (session('alert') == 'status3')
+                <div class="alert alert-danger mb-2" role="alert">
+                  <strong>Quá trình nạp card đang được xử lý, vui lòng kiểm tra lịch sử nạp card, hoặc liên hệ với fanpage nếu sau 30 phút chưa nhận được tiền.</strong>
                 </div>
                 @endif
               @endif

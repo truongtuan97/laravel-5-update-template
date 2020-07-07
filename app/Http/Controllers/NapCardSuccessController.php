@@ -32,29 +32,36 @@ class NapCardSuccessController extends Controller
                 return;
             }  
             $transaction = $data->txn;
-            
-            if ($transaction->stat == 2) {
-                if (!is_null($data->order->mrc_order_id && !is_null($data->txn->id))) {                    
-                    $cardHistory = CardHistory::where('orderID', $data->order->mrc_order_id)->first();
-                                        
-                    if (!empty($cardHistory) && $cardHistory->success != 1) {
-                        $accountInfo = AccountInfo::where('cAccName', $cardHistory->username)->first();                        
-                        $accountInfo->nExtPoint1 += $cardHistory->ingame_amount;
-                        $accountInfo->save();
+
+            if (!is_null($data->order->mrc_order_id && !is_null($data->txn->id))) {
+                $cardHistory = CardHistory::where('orderID', $data->order->mrc_order_id)->first();
+
+                if (!empty($cardHistory)) {
+                    if ($transaction->stat == 2) {
+                        if ($cardHistory->success != 1) {
+                            $accountInfo = AccountInfo::where('cAccName', $cardHistory->username)->first();                        
+                            $accountInfo->nExtPoint1 += $cardHistory->ingame_amount;
+                            $accountInfo->save();
+                            
+                            $cardHistory->baokim_txn_id = $data->txn->id;
+                            $cardHistory->card_fee_amount = $transaction->fee_amount;
+                            $cardHistory->status = $transaction->stat;
+                            $cardHistory->success = 1;                        
+                            $cardHistory->updated_at = $transaction->updated_at;
+                            $cardHistory->save();                            
+                        }
                         
+                        $responseValue = new \stdClass();
+                        $responseValue->err_code = 0;
+                        $responseValue->message = "Nap card thanh cong";
+                        return response()->json($responseValue);
+                    } else {
                         $cardHistory->baokim_txn_id = $data->txn->id;
                         $cardHistory->card_fee_amount = $transaction->fee_amount;
-                        $cardHistory->status = $transaction->stat;
-                        $cardHistory->success = 1;                        
-                        $cardHistory->updated_at = Carbon::Now();
+                        $cardHistory->status = $transaction->stat;                        
+                        $cardHistory->updated_at = $transaction->updated_at;
                         $cardHistory->save();
-                        
                     }
-                    
-                    $responseValue = new \stdClass();
-                    $responseValue->err_code = 0;
-                    $responseValue->message = "Nap card thanh cong";
-                    return response()->json($responseValue);
                 }
             }            
         }

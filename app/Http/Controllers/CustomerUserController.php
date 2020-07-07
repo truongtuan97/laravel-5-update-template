@@ -283,11 +283,19 @@ class CustomerUserController extends Controller
             }
             $loop += 1;
         }
-        
+                
         if ($cardHistory->success == 1) {
             return redirect()->back()->with('alert', 'success');
         } else {
-            return redirect()->back()->with('alert', 'failed');
+            if ($cardHistory->status == 1) {
+                return redirect()->back()->with('alert', 'status1');
+            }
+            if ($cardHistory->status == 3) {
+                return redirect()->back()->with('alert', 'status2');
+            }
+            if ($cardHistory->status == 3) {
+                return redirect()->back()->with('alert', 'status3');
+            }
         }
     }
 
