@@ -25,29 +25,30 @@ class NapCardSuccessController extends Controller
 
     public function napcard_success(Request $request) {        
         
-        $data = json_decode($request->getContent());        
-
+        $data = json_decode($request->getContent());
+        
         try {
             if (empty($data)){
                 return;
             }  
             $transaction = $data->txn;
+            
             if ($transaction->stat == 2) {
-                if (!is_null($data->order->mrc_order_id && !is_null($data->txn->id))) {
+                if (!is_null($data->order->mrc_order_id && !is_null($data->txn->id))) {                    
                     $cardHistory = CardHistory::where('orderID', $data->order->mrc_order_id)->first();
-
-                    if (!empty($cardHistory)) {
-
-                        $accountInfo = AccountInfo::where('cAccName', $cardHistory->username)->first();
+                                        
+                    if (!empty($cardHistory->username)) {
+                        $accountInfo = AccountInfo::where('cAccName', $cardHistory->username)->first();                        
                         $accountInfo->nExtPoint1 += $cardHistory->ingame_amount;
                         $accountInfo->save();
-
+                        
                         $cardHistory->baokim_txn_id = $data->txn->id;
                         $cardHistory->card_fee_amount = $transaction->fee_amount;
                         $cardHistory->status = $transaction->stat;
                         $cardHistory->success = 1;                        
-                        $cardHistory->updated_at = Carbon::now();
+                        $cardHistory->updated_at = Carbon::Now();
                         $cardHistory->save();
+                        
                     }
                     
                     $responseValue = new \stdClass();

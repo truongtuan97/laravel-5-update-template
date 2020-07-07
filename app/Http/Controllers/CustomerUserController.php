@@ -221,8 +221,10 @@ class CustomerUserController extends Controller
         ]);        
         $user = Auth::user();
         $chkm = PromotionConfiguration::all()->first();
-
-        $orderID = $user->cAccName.'-'.Carbon::now()->timestamp;
+        
+        $date = new DateTime();
+        
+        $orderID = $user->cAccName.'-'.Carbon::now()->$date->getTimestamp();
         $cardAmount = $request->cardInfo;
         
         $payload['mrc_order_id'] = $orderID;
