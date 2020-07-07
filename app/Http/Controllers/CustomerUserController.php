@@ -272,9 +272,9 @@ class CustomerUserController extends Controller
         
         $loop = 0;
         $cardHistory = new \stdClass();
-
+        
         while ($loop < 3) {
-            \sleep(2);
+            \sleep(env('SECOND_TIMEOUT'));
             $cardHistory = CardHistory::where('orderID', $orderID)->first();
             if ($cardHistory->success == 1) {
                 break;
