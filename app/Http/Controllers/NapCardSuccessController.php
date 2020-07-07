@@ -37,7 +37,7 @@ class NapCardSuccessController extends Controller
                 if (!is_null($data->order->mrc_order_id && !is_null($data->txn->id))) {                    
                     $cardHistory = CardHistory::where('orderID', $data->order->mrc_order_id)->first();
                                         
-                    if (!empty($cardHistory->username)) {
+                    if (!empty($cardHistory) && $cardHistory->success != 1) {
                         $accountInfo = AccountInfo::where('cAccName', $cardHistory->username)->first();                        
                         $accountInfo->nExtPoint1 += $cardHistory->ingame_amount;
                         $accountInfo->save();
