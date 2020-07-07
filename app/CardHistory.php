@@ -17,6 +17,6 @@ class CardHistory extends Model
      */
     protected $fillable = [
         "username","orderID","baokim_txn_id","card_type","card_code","card_serial","card_amount","card_real_amount",
-        "card_fee_amount","status","ingame_amount","success","id"
+        "card_fee_amount","status","ingame_amount","success","id", 'created_at', 'updated_at'
     ];
 }

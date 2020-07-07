@@ -222,9 +222,9 @@ class CustomerUserController extends Controller
         $user = Auth::user();
         $chkm = PromotionConfiguration::all()->first();
         
-        $date = new DateTime();
+        $date = new \DateTime();
         
-        $orderID = $user->cAccName.'-'.Carbon::now()->$date->getTimestamp();
+        $orderID = $user->cAccName.'-'.$date->getTimestamp();        
         $cardAmount = $request->cardInfo;
         
         $payload['mrc_order_id'] = $orderID;
@@ -247,8 +247,8 @@ class CustomerUserController extends Controller
             'card_serial' => $request->serial,
             'status' => 1,
             'ingame_amount' => (($cardAmount / 1000) + (($cardAmount / 1000) * $chkm->khuyenmai)),
-            'created_at' => Carbon::now(),
-            'updated_at' => Carbon::now(),
+            'created_at' => Carbon::Now(),
+            'updated_at' => Carbon::Now(),
         ]);
         
         // create request with CURL

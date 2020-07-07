@@ -15,7 +15,7 @@
                 @endif
                 @if (session('alert') == 'failed')
                 <div class="alert alert-danger mb-2" role="alert">
-                  <strong>Oh snap!</strong> Update failed.
+                  <strong>Quá trình đang được xử lý vui lòng kiểm tra lịch sử nạp card sau.</strong>
                 </div>
                 @endif
               @endif
