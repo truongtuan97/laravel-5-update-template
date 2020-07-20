@@ -206,6 +206,55 @@ class CustomerUserController extends Controller
         }
     }
 
+    public function thanhtoan() {        
+        BaoKim::setKey("zSPXbJoUvGSEEVH2rKGUUuyftTklQuXq", "6SepTb3GBRgeGFzk4uyhcCdxeE3LthOm");
+                
+        $url_api = "https://api.baokim.vn/payment/api/v4/bpm/list?jwt=".BaoKim::getKey()."&lb_available=0&offset=0&limit=100";
+        $options = array(
+            CURLOPT_RETURNTRANSFER => true,   // return web page
+            CURLOPT_HTTPHEADER     => array("Content-Type: application/json", "Accept: application/json"),  // don't return headers
+            CURLOPT_FOLLOWLOCATION => true,   // follow redirects
+            CURLOPT_MAXREDIRS      => 10,     // stop after 10 redirects
+            CURLOPT_ENCODING       => "",     // handle compressed            
+            CURLOPT_AUTOREFERER    => true,   // set referrer on redirect
+            CURLOPT_CONNECTTIMEOUT => 60,    // time-out on connect
+            CURLOPT_TIMEOUT        => 60,    // time-out on response
+            CURLOPT_POST           => false,                        
+            CURLOPT_SSL_VERIFYPEER => false,  // ignore SSL verify            
+        );
+        
+        // create request with CURL
+        $ch = curl_init($url_api);
+        curl_setopt_array($ch, $options);
+
+        $response = curl_exec($ch);
+                
+        $data = json_decode($response);
+
+        curl_close($ch);
+
+        //dd($data);
+        $bankList = [];
+        $dataViBaoKim = null;
+        $dataQRCode = null;
+        foreach ($data->data as $dataItem) {
+            if ($dataItem->type == 1) {
+                $bankList[] = $dataItem;
+            }
+            if ($dataItem->type == 0) {
+                $dataViBaoKim = $dataItem;
+            }
+            if ($dataItem->type == 14) {
+                $dataQRCode = $dataItem;
+            }
+        }
+
+        $user = Auth::user();
+        $cardInfos = CardInfo::all();
+
+        return view('users.thanhtoan', compact([ 'user', 'data', 'cardInfos', 'bankList', 'dataViBaoKim', 'dataQRCode' ]));
+    }
+
     public function napcard() {
         $user = Auth::user();
         $cardInfos = CardInfo::all();

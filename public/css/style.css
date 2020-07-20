@@ -26,8 +26,7 @@ bg-full-screen-image {
     left: 0;
     height: 100%;
     width: 100%;
-    background: rgba(255, 255, 255, 0.8)
-        url("http://i.stack.imgur.com/FhHRx.gif") 50% 50% no-repeat;
+    background: rgba(255, 255, 255, 0.8) url("http://i.stack.imgur.com/FhHRx.gif") 50% 50% no-repeat;
 }
 
 /* When the body has the loading class, we turn
@@ -40,4 +39,31 @@ body.loading .modal {
    modal element will be visible */
 body.loading .modal {
     display: block;
+}
+
+.bank_list {
+    margin-top: 0;
+    clear: both;
+    display: block;
+}
+
+.bank_list #b_l ul,
+li {
+    list-style: none;
+}
+
+.bank_list #b_l li {
+    float: left;
+    width: 90px;
+    margin: 10px 10px 0px 0;
+    border-bottom: none;
+    padding: 0 !important;
+}
+
+.img-bank {
+    border: 2px solid lightblue;
+}
+
+.img-active {
+    border: 2px solid blue !important;
 }

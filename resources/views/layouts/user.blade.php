@@ -257,6 +257,32 @@
             $body.addClass("loading");
           }            
         }
+
+        function setActiveBankSelect(sender) {
+          resetBankList();
+          $(sender).attr('class', 'img-bank img-active');
+          $('#chkQRCode').prop('checked', false);
+          $('#chkViBaoKim').prop('checked', false);
+        }
+
+        function setCheckedViBaoKim() {
+          resetBankList();
+          $('#chkQRCode').prop('checked', false);
+        }
+
+        function setCheckQRCode(){
+          resetBankList();
+          $('#chkViBaoKim').prop('checked', false);
+        }
+
+        function resetBankList() {
+          var bankListEl = $('#b_l').children();
+          
+          for (var i=0; i < bankListEl.length; i++) {
+            var firstChild = $(bankListEl[i]).children()[0];
+            $(firstChild).removeClass('img-active');
+          }
+        }
     </script>
 </body>
 <!-- END: Body-->
