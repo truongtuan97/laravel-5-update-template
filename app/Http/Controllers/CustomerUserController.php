@@ -270,14 +270,17 @@ class CustomerUserController extends Controller
         $orderID = $user->cAccName.'-'.$date->getTimestamp();
         $cardAmount = $request->cardInfo;
                                                     
-        BaoKim::setKey(env("BAOKIM_API_KEY"), env("BAOKIM_SECREY_KEY"));
-        $url_api = "https://api.baokim.vn/payment/api/v4/order/send?jwt=".BaoKim::getToken();
+        //BaoKim::setKey(env("BAOKIM_API_KEY"), env("BAOKIM_SECREY_KEY"));
+        //$url_api = "https://api.baokim.vn/payment/api/v4/order/send?jwt=".BaoKim::getToken();
         
+        BaoKim::setKey("a18ff78e7a9e44f38de372e093d87ca1", "9623ac03057e433f95d86cf4f3bef5cc");
+        $url_api = "https://sandbox-api.baokim.vn/payment/"."api/v4/order/send?jwt=".BaoKim::getToken();
+                
         $payload['mrc_order_id']    = $orderID;
         $payload['total_amount']    = $cardAmount;
         $payload['description']     = "Test thanh toan pro";
         $payload['url_success']     = env("NAPCARD_WEB_HOOK_URL");
-        $payload['merchant_id']     = "13";
+        //$payload['merchant_id']     = 13;
         $payload['url_detail']      = env("NAPCARD_WEB_HOOK_URL");
         $payload['lang']            = "en";
         $payload['bpm_id']          = $request->bankID;
@@ -287,20 +290,9 @@ class CustomerUserController extends Controller
         $payload['accept_e_wallet'] = 0;
         $payload['webhooks']        = env("NAPCARD_WEB_HOOK_URL");
         $payload['customer_email']  = $user->email;
-        $payload['customer_phone']  = $user->phone;
+        $payload['customer_phone']  = "0903113122";
         $payload['customer_name']   = $user->cAccName;
-        //$payload['customer_address'] = $user->address;
-
-        //save to log
-        BankHistory::create([
-            'username' => Auth::user()->cAccName,
-            'orderID' => $orderID,            
-            'total_amount' => $cardAmount,
-            'status' => 1,
-            'ingame_amount' => (($cardAmount / 1000) + (($cardAmount / 1000) * $chkm->khuyenmai)),
-            'created_at' => Carbon::Now(),
-            'updated_at' => Carbon::Now(),
-        ]);
+        //$payload['customer_address'] = $user->address;        
         
         // create request with CURL
         $ch = curl_init($url_api);
@@ -318,12 +310,24 @@ class CustomerUserController extends Controller
             CURLOPT_SSL_VERIFYPEER => false,  // ignore SSL verify
             CURLOPT_POSTFIELDS     => \json_encode($payload)
         ); 
-            
+
         curl_setopt_array($ch, $options);        
         $output = curl_exec($ch);
         curl_close($ch);
 
-        dd($output);
+        //save to log
+        BankHistory::create([
+            'username' => Auth::user()->cAccName,
+            'orderID' => $orderID,            
+            'total_amount' => $cardAmount,
+            'status' => 1,
+            'ingame_amount' => (($cardAmount / 1000) + (($cardAmount / 1000) * $chkm->khuyenmai)),
+            'bank_id' => $request->bankID,
+            'created_at' => Carbon::Now(),
+            'updated_at' => Carbon::Now(),
+        ]);
+
+        dd(\json_decode($output));
     }
 
     public function napcard() {

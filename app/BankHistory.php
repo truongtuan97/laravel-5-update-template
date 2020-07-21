@@ -16,7 +16,7 @@ class BankHistory extends Model
      * @var array
      */
     protected $fillable = [
-        "username","orderID","baokim_txn_id", "total_amount", "ingame_amount",
-        "bank_id","status","success", 'created_at', 'updated_at'
+        "username","orderID","baokim_txn_id","total_amount","status","ingame_amount","success",
+        "bank_id", 'created_at', 'updated_at'
     ];
 }
