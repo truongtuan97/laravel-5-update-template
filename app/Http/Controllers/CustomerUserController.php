@@ -270,12 +270,15 @@ class CustomerUserController extends Controller
         $orderID = $user->cAccName.'-'.$date->getTimestamp();
         $cardAmount = $request->cardInfo;
                                                     
-        //BaoKim::setKey(env("BAOKIM_API_KEY"), env("BAOKIM_SECREY_KEY"));
-        //$url_api = "https://api.baokim.vn/payment/api/v4/order/send?jwt=".BaoKim::getToken();
+        BaoKim::setKey(env("BAOKIM_API_KEY"), env("BAOKIM_SECREY_KEY"));
+        $url_api = "https://api.baokim.vn/payment/api/v4/order/send?jwt=".BaoKim::getToken();
         
-        BaoKim::setKey("a18ff78e7a9e44f38de372e093d87ca1", "9623ac03057e433f95d86cf4f3bef5cc");
-        $url_api = "https://sandbox-api.baokim.vn/payment/"."api/v4/order/send?jwt=".BaoKim::getToken();
-                
+        //BaoKim::setKey("a18ff78e7a9e44f38de372e093d87ca1", "9623ac03057e433f95d86cf4f3bef5cc");
+        //$url_api = "https://sandbox-api.baokim.vn/payment/"."api/v4/order/send?jwt=".BaoKim::getToken();
+        $bmp_id = $request->bankID;
+        if ($request->QRCode == true) {
+            $bmp_id = 297;
+        }
         $payload['mrc_order_id']    = $orderID;
         $payload['total_amount']    = $cardAmount;
         $payload['description']     = "Test thanh toan pro";
@@ -283,14 +286,14 @@ class CustomerUserController extends Controller
         //$payload['merchant_id']     = 13;
         $payload['url_detail']      = env("NAPCARD_WEB_HOOK_URL");
         $payload['lang']            = "en";
-        $payload['bpm_id']          = $request->bankID;
+        $payload['bpm_id']          = $bmp_id;
         $payload['accept_bank']     = 1;
         $payload['accept_cc']       = 1;
         $payload['accept_qrpay']    = 1;
         $payload['accept_e_wallet'] = 0;
         $payload['webhooks']        = env("NAPCARD_WEB_HOOK_URL");
         $payload['customer_email']  = $user->email;
-        $payload['customer_phone']  = "0903113122";
+        $payload['customer_phone']  = $user->phone;
         $payload['customer_name']   = $user->cAccName;
         //$payload['customer_address'] = $user->address;        
         
