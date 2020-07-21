@@ -13,6 +13,7 @@ use App\AccountMoneyTracking;
 use App\CardInfo;
 use App\CardType;
 use App\CardHistory;
+use App\BankHistory;
 use App\PromotionConfiguration;
 
 use Carbon\Carbon;
@@ -207,7 +208,7 @@ class CustomerUserController extends Controller
     }
 
     public function thanhtoan() {        
-        BaoKim::setKey("zSPXbJoUvGSEEVH2rKGUUuyftTklQuXq", "6SepTb3GBRgeGFzk4uyhcCdxeE3LthOm");
+        BaoKim::setKey(env("BAOKIM_API_KEY"), env("BAOKIM_SECREY_KEY"));
                 
         $url_api = "https://api.baokim.vn/payment/api/v4/bpm/list?jwt=".BaoKim::getKey()."&lb_available=0&offset=0&limit=100";
         $options = array(
@@ -253,6 +254,76 @@ class CustomerUserController extends Controller
         $cardInfos = CardInfo::all();
 
         return view('users.thanhtoan', compact([ 'user', 'data', 'cardInfos', 'bankList', 'dataViBaoKim', 'dataQRCode' ]));
+    }
+
+    public function updateThanhToan(Request $request) {
+        $validateResult = $this->validate($request, [
+            //'QRCode' => 'required',
+            'cardInfo' => 'required',
+            //'bankID' => 'required'
+        ]);
+        $user = Auth::user();
+        $chkm = PromotionConfiguration::all()->first();
+        
+        $date = new \DateTime();
+        
+        $orderID = $user->cAccName.'-'.$date->getTimestamp();
+        $cardAmount = $request->cardInfo;
+                                                    
+        BaoKim::setKey(env("BAOKIM_API_KEY"), env("BAOKIM_SECREY_KEY"));
+        $url_api = "https://api.baokim.vn/payment/api/v4/order/send?jwt=".BaoKim::getToken();
+        
+        $payload['mrc_order_id']    = $orderID;
+        $payload['total_amount']    = $cardAmount;
+        $payload['description']     = "Test thanh toan pro";
+        $payload['url_success']     = env("NAPCARD_WEB_HOOK_URL");
+        $payload['merchant_id']     = "13";
+        $payload['url_detail']      = env("NAPCARD_WEB_HOOK_URL");
+        $payload['lang']            = "en";
+        $payload['bpm_id']          = $request->bankID;
+        $payload['accept_bank']     = 1;
+        $payload['accept_cc']       = 1;
+        $payload['accept_qrpay']    = 1;
+        $payload['accept_e_wallet'] = 0;
+        $payload['webhooks']        = env("NAPCARD_WEB_HOOK_URL");
+        $payload['customer_email']  = $user->email;
+        $payload['customer_phone']  = $user->phone;
+        $payload['customer_name']   = $user->cAccName;
+        //$payload['customer_address'] = $user->address;
+
+        //save to log
+        BankHistory::create([
+            'username' => Auth::user()->cAccName,
+            'orderID' => $orderID,            
+            'total_amount' => $cardAmount,
+            'status' => 1,
+            'ingame_amount' => (($cardAmount / 1000) + (($cardAmount / 1000) * $chkm->khuyenmai)),
+            'created_at' => Carbon::Now(),
+            'updated_at' => Carbon::Now(),
+        ]);
+        
+        // create request with CURL
+        $ch = curl_init($url_api);
+
+        $options = array(
+            CURLOPT_RETURNTRANSFER => true,   // return web page
+            CURLOPT_HTTPHEADER     => array("Content-Type: application/json", "Accept: application/json"),  // don't return headers
+            CURLOPT_FOLLOWLOCATION => true,   // follow redirects
+            CURLOPT_MAXREDIRS      => 10,     // stop after 10 redirects
+            CURLOPT_ENCODING       => "",     // handle compressed            
+            CURLOPT_AUTOREFERER    => true,   // set referrer on redirect
+            CURLOPT_CONNECTTIMEOUT => 60,    // time-out on connect
+            CURLOPT_TIMEOUT        => 60,    // time-out on response
+            CURLOPT_POST           => true,                        
+            CURLOPT_SSL_VERIFYPEER => false,  // ignore SSL verify
+            CURLOPT_POSTFIELDS     => \json_encode($payload)
+        ); 
+            
+        curl_setopt_array($ch, $options);        
+        $output = curl_exec($ch);
+        curl_close($ch);
+
+        dd($output);
     }
 
     public function napcard() {

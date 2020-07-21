@@ -183,6 +183,7 @@
         <li class=""><a href="{{ route('lichsuruttien') }}"><i class="fa fa-clock-o"></i> <span>Lịch sử rút
               tiền</span></a></li>
         <li class=""><a href="{{ route('user.napcard.edit', Auth::user()->cAccName) }}"><i class="fa fa-clock-o"></i> <span>Nạp card</span></a></li>
+        <li class=""><a href="{{ route('user.thanhtoan') }}"><i class="fa fa-clock-o"></i> <span>Thanh toán</span></a></li>
       </ul>
     </section>
   </aside>
@@ -261,8 +262,11 @@
         function setActiveBankSelect(sender) {
           resetBankList();
           $(sender).attr('class', 'img-bank img-active');
+          
           $('#chkQRCode').prop('checked', false);
           $('#chkViBaoKim').prop('checked', false);
+
+          $("#bankID").val($(sender).attr('id'));
         }
 
         function setCheckedViBaoKim() {
@@ -273,9 +277,12 @@
         function setCheckQRCode(){
           resetBankList();
           $('#chkViBaoKim').prop('checked', false);
+          $('#QRCode').val(true);
         }
 
         function resetBankList() {
+          $("#bankID").val("");
+          $('#QRCode').val("");
           var bankListEl = $('#b_l').children();
           
           for (var i=0; i < bankListEl.length; i++) {

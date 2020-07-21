@@ -29,7 +29,7 @@
                 </div>
                 @endif
               @endif
-              <form method="post" action="{{route('user.napcard.update', $user)}}">
+              <form method="post" action="{{route('user.thanhtoan')}}">
                 @csrf
                 <!-- {{ method_field('PATCH') }} -->
                 <div class="form-group row">
@@ -71,17 +71,18 @@
                     </div>
                 </div>
 
-                <div class="form-group row">                                                            
+                <!-- <div class="form-group row">                                                            
                     <label for="cardInfo" class="col-md-4 col-form-label">{{ __('Sử dụng ví Bảo Kim') }}</label>
                     <div class="col-sm-6">
                         <input class="form-check-input" type="checkbox" id="chkViBaoKim" value="{{ $dataViBaoKim->id }}" onClick="setCheckedViBaoKim();">
                     </div>
-                </div>
+                </div> -->
 
                 <div class="form-group row">                                                            
                     <label for="cardInfo" class="col-md-4 col-form-label">{{ __('Sử dụng QR code') }}</label>
                     <div class="col-sm-6">
-                        <input class="form-check-input" type="checkbox" id="chkQRCode" value="{{ $dataQRCode->id }}" onClick="setCheckQRCode();">
+                      <input type="hidden" id="QRCode" name="QRCode" value="" />
+                      <input class="form-check-input" type="checkbox" id="chkQRCode" value="{{ $dataQRCode->id }}" onClick="setCheckQRCode();">
                     </div>
                 </div>
 
@@ -90,6 +91,7 @@
                     <div class="col-sm-6">
                       <div class="bank_list">
                         <ul id="b_l">
+                          <input type="hidden" id="bankID" name="bankID" value="" />
                           @foreach ($bankList as $bank)
                           <li>
                             <img class="img-bank" id="{{ $bank->id}}" style="width: 100%" src="{{ $bank->bank_logo }}" onClick="setActiveBankSelect(this)">

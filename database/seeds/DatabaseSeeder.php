@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Database\Seeder;
-use Carbon;
+use Carbon\Carbon;
 
 class DatabaseSeeder extends Seeder
 {
@@ -46,7 +46,7 @@ class DatabaseSeeder extends Seeder
                 'ngay_ket_thuc' => Carbon::Now(),
                 'khuyenmai' => 0
             ]
-        ]
+        ];
         DB::table('promotion_configurations')->insert($data);
     }
 }
